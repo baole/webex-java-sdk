@@ -1,38 +1,12 @@
-package com.ciscospark;
+package com.ciscospark
 
-import java.util.Date;
+import java.util.*
 
 /**
  * Copyright (c) 2016 Cisco Systems, Inc. See LICENSE file.
  */
-public class Organization {
-    private String id;
-    private String displayName;
-    private Date created;
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-}
+class Organization(
+        var id: String? = null,
+        var displayName: String? = null,
+        var created: Date? = null
+)

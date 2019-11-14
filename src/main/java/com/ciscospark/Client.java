@@ -1,5 +1,9 @@
 package com.ciscospark;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -105,16 +109,21 @@ class Client {
         LinkedResponse.BodyCreator<List<T>> function = new LinkedResponse.BodyCreator<List<T>>() {
             @Override
             public List<T> create(InputStream istream) {
-                JsonParser parser = Json.createParser(istream);
-                Client.this.scrollToItemsArray(parser);
-
-                List<T> result = new ArrayList<T>();
-                for (JsonParser.Event event = parser.next();
-                     event == JsonParser.Event.START_OBJECT;
-                     event = parser.next()) {
-                    result.add(readObject(clazz, parser));
-                }
-                return result;
+                Type type = new TypeToken<List<T>>() {}.getType();
+                return new GsonBuilder().create().fromJson(new InputStreamReader(istream), type);
+//
+//                val type = object : TypeToken<HangoutsResponse<T>>() {}.getType()
+//
+//                JsonParser parser = Json.createParser(istream);
+//                Client.this.scrollToItemsArray(parser);
+//
+//                List<T> result = new ArrayList<T>();
+//                for (JsonParser.Event event = parser.next();
+//                     event == JsonParser.Event.START_OBJECT;
+//                     event = parser.next()) {
+//                    result.add(readObject(clazz, parser));
+//                }
+//                return result;
             }
         };
 
@@ -338,9 +347,11 @@ class Client {
 
 
     private static <T> T readJson(Class<T> clazz, InputStream inputStream) {
-        JsonParser parser = Json.createParser(inputStream);
-        parser.next();
-        return readObject(clazz, parser);
+        return new GsonBuilder().create().fromJson(new InputStreamReader(inputStream), clazz);
+//
+//        JsonParser parser = Json.createParser(inputStream);
+//        parser.next();
+//        return readObject(clazz, parser);
     }
 
     private static <T> T readObject(Class<T> clazz, JsonParser parser) {
@@ -487,52 +498,59 @@ class Client {
     }
 
     private void writeJson(Object body, OutputStream ostream) {
-        JsonGenerator jsonGenerator = Json.createGenerator(ostream);
-        jsonGenerator.writeStartObject();
-        for (Field field : body.getClass().getDeclaredFields()) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(body);
-                if (value == null) {
-                    continue;
-                }
-
-                Type type = field.getType();
-                if (type == String.class) {
-                    jsonGenerator.write(field.getName(), (String) value);
-                } else if (type == Integer.class) {
-                    jsonGenerator.write(field.getName(), (Integer) value);
-                } else if (type == BigDecimal.class) {
-                    jsonGenerator.write(field.getName(), (BigDecimal) value);
-                } else if (type == Date.class) {
-                    DateFormat dateFormat = new SimpleDateFormat(ISO8601_FORMAT);
-                    jsonGenerator.write(field.getName(), dateFormat.format(value));
-                } else if (type == URI.class) {
-                    jsonGenerator.write(field.getName(), value.toString());
-                } else if (type == JsonArray.class) {
-                    jsonGenerator.write(field.getName(), (JsonArray) value);
-                } else if (type == Boolean.class) {
-                    jsonGenerator.write(field.getName(), (Boolean) value);
-                } else if (type == String[].class) {
-                    jsonGenerator.writeStartArray(field.getName());
-                    for (String st : (String[]) value) {
-                        jsonGenerator.write(st);
-                    }
-                    jsonGenerator.writeEnd();
-                } else if (type == URI[].class) {
-                    jsonGenerator.writeStartArray(field.getName());
-                    for (URI uri : (URI[]) value) {
-                        jsonGenerator.write(uri.toString());
-                    }
-                    jsonGenerator.writeEnd();
-                }
-            } catch (IllegalAccessException ex) {
-                // ignore
-            }
+        String json = new GsonBuilder().create().toJson(body);
+        try {
+            ostream.write(json.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        jsonGenerator.writeEnd();
-        jsonGenerator.flush();
-        jsonGenerator.close();
+
+//        JsonGenerator jsonGenerator = Json.createGenerator(ostream);
+//        jsonGenerator.writeStartObject();
+//        for (Field field : body.getClass().getDeclaredFields()) {
+//            field.setAccessible(true);
+//            try {
+//                Object value = field.get(body);
+//                if (value == null) {
+//                    continue;
+//                }
+//
+//                Type type = field.getType();
+//                if (type == String.class) {
+//                    jsonGenerator.write(field.getName(), (String) value);
+//                } else if (type == Integer.class) {
+//                    jsonGenerator.write(field.getName(), (Integer) value);
+//                } else if (type == BigDecimal.class) {
+//                    jsonGenerator.write(field.getName(), (BigDecimal) value);
+//                } else if (type == Date.class) {
+//                    DateFormat dateFormat = new SimpleDateFormat(ISO8601_FORMAT);
+//                    jsonGenerator.write(field.getName(), dateFormat.format(value));
+//                } else if (type == URI.class) {
+//                    jsonGenerator.write(field.getName(), value.toString());
+//                } else if (type == JsonArray.class) {
+//                    jsonGenerator.write(field.getName(), (JsonArray) value);
+//                } else if (type == Boolean.class) {
+//                    jsonGenerator.write(field.getName(), (Boolean) value);
+//                } else if (type == String[].class) {
+//                    jsonGenerator.writeStartArray(field.getName());
+//                    for (String st : (String[]) value) {
+//                        jsonGenerator.write(st);
+//                    }
+//                    jsonGenerator.writeEnd();
+//                } else if (type == URI[].class) {
+//                    jsonGenerator.writeStartArray(field.getName());
+//                    for (URI uri : (URI[]) value) {
+//                        jsonGenerator.write(uri.toString());
+//                    }
+//                    jsonGenerator.writeEnd();
+//                }
+//            } catch (IllegalAccessException ex) {
+//                // ignore
+//            }
+//        }
+//        jsonGenerator.writeEnd();
+//        jsonGenerator.flush();
+//        jsonGenerator.close();
     }
 
     private class PagingIterator<T> implements Iterator<T> {
