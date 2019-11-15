@@ -7,8 +7,8 @@ import java.util.*
  */
 class Membership(
         var id: String? = null,
-        var roomId: String? = null,
-        var personId: String? = null,
+        var roomId: String,
+        var personId: String,
         var personDisplayName: String? = null,
         var personEmail: String? = null,
         var isModerator: Boolean? = null,

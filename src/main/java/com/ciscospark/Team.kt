@@ -7,6 +7,6 @@ import java.util.*
  */
 class Team(
     var id: String? = null,
-    var name: String? = null,
+    var name: String,
     var created: Date? = null
 )

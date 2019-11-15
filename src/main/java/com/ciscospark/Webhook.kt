@@ -8,11 +8,11 @@ import java.util.*
  */
 class Webhook(
     var id: String? = null,
-    var name: String? = null,
-    var resource: String? = null,
-    var event: String? = null,
+    var name: String,
+    var resource: String,
+    var event: String,
     var filter: String? = null,
-    var targetUrl: URI? = null,
+    var targetUrl: URI,
     var secret: String? = null,
     var created: Date? = null
 
