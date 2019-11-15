@@ -5,5 +5,5 @@ package com.ciscospark
  */
 class Role(
     var id: String? = null,
-    var name: String
+    var name: String = ""
 )

@@ -7,11 +7,11 @@ import java.util.*
  */
 class Room (
     var id: String? = null,
-    var title: String,
-    var teamId: String,
+    var title: String? = null,
+    var teamId: String? = null,
     var isLocked: Boolean? = null,
     var created: Date? = null,
     var lastActivity: Date? = null,
-    var type: String,
+    var type: String? = null,
     var sipAddress: String? = null
 )

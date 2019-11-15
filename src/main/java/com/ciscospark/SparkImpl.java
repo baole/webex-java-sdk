@@ -60,5 +60,10 @@ class SparkImpl extends Spark {
     public RequestBuilder<Role> roles() {
         return new RequestBuilderImpl<Role>(Role.class, client, "/roles");
     }
-    
+
+    @Override
+    public RequestBuilder<AttachmentAction> attachmentActions() {
+        return new RequestBuilderImpl<AttachmentAction>(AttachmentAction.class, client, "/attachment/actions");
+    }
+
 }
