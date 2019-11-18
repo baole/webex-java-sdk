@@ -13,6 +13,8 @@ class Membership(
         var personEmail: String? = null,
         var isModerator: Boolean? = null,
         var isMonitor: Boolean? = null,
+        var roomType: String? = null,
         var created: Date? = null
+
 
 )
