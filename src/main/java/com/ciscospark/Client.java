@@ -61,7 +61,15 @@ class Client {
         return readJson(clazz, request("POST", path, null, body));
     }
 
+    <T> T post(Class<T> clazz, String path, String body) {
+        return readJson(clazz, request("POST", path, null, body));
+    }
+
     <T> T post(Class<T> clazz, URL url, T body) {
+        return readJson(clazz, request(url, "POST", body).inputStream);
+    }
+
+    <T> T post(Class<T> clazz, URL url, String body) {
         return readJson(clazz, request(url, "POST", body).inputStream);
     }
 
@@ -498,9 +506,14 @@ class Client {
     }
 
     private void writeJson(Object body, OutputStream ostream) {
-        String json = new GsonBuilder().create().toJson(body);
+        String payload;
+        if (body instanceof String) {
+            payload = (String) body;
+        } else {
+            payload = new GsonBuilder().create().toJson(body);
+        }
         try {
-            ostream.write(json.getBytes());
+            ostream.write(payload.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

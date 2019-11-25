@@ -62,6 +62,15 @@ class RequestBuilderImpl<T> implements RequestBuilder<T> {
     }
 
     @Override
+    public T post(String body) {
+        if (url != null) {
+            return client.post(clazz, url, body);
+        } else {
+            return client.post(clazz, pathBuilder.toString(), body);
+        }
+    }
+
+    @Override
     public T put(T body) {
         if (url != null) {
             return client.put(clazz, url, body);

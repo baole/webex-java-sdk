@@ -11,10 +11,9 @@ class Membership(
         var personId: String = "",
         var personDisplayName: String? = null,
         var personEmail: String? = null,
+        var personOrgId: String? = null,
         var isModerator: Boolean? = null,
         var isMonitor: Boolean? = null,
         var roomType: String? = null,
         var created: Date? = null
-
-
 )
